@@ -59,6 +59,23 @@ PACKAGES="$PACKAGES openssh-sftp-server"
 # AQC113C 10G网卡驱动
 PACKAGES="$PACKAGES kmod-atlantic kmod-phy-aquantia"
 
+# 下载 EasyTier apk（不在ImmortalWrt仓库和第三方仓库中，需从GitHub下载）
+echo "⬇️ 正在下载 EasyTier apk..."
+EASYTIER_URL=$(curl -s https://api.github.com/repos/EasyTier/luci-app-easytier/releases/latest \
+  | grep "browser_download_url.*x86_64-SNAPSHOT.zip" \
+  | head -n1 \
+  | cut -d '"' -f 4)
+if [ -n "$EASYTIER_URL" ]; then
+  echo "EasyTier latest apk: $EASYTIER_URL"
+  wget -qO /tmp/easytier.zip "$EASYTIER_URL"
+  unzip -o /tmp/easytier.zip -d /tmp/easytier-apk
+  cp /tmp/easytier-apk/*.apk /home/build/immortalwrt/packages/
+  PACKAGES="$PACKAGES easytier luci-app-easytier"
+  echo "✅ EasyTier apk 已添加"
+else
+  echo "⚠️ 未找到 EasyTier 下载链接，跳过"
+fi
+
 # 文件管理器
 PACKAGES="$PACKAGES luci-i18n-filemanager-zh-cn"
 # ======== shell/apk-custom-packages.sh =======

@@ -21,6 +21,15 @@ EOF
 echo "cat pppoe-settings"
 cat /home/build/immortalwrt/files/etc/config/pppoe-settings
 
+# 创建接口绑定配置文件 供99-custom.sh读取
+cat << EOF > /home/build/immortalwrt/files/etc/config/interface-bindings
+wan_interfaces=${WAN_INTERFACES}
+lan_interfaces=${LAN_INTERFACES}
+EOF
+
+echo "cat interface-bindings"
+cat /home/build/immortalwrt/files/etc/config/interface-bindings
+
 if [ -z "$CUSTOM_PACKAGES" ]; then
   echo "⚪️ 未选择 任何第三方软件包"
 else
@@ -70,8 +79,8 @@ if [ -n "$EASYTIER_URL" ]; then
   wget -qO /tmp/easytier.zip "$EASYTIER_URL"
   unzip -o /tmp/easytier.zip -d /tmp/easytier-apk
   cp /tmp/easytier-apk/*.apk /home/build/immortalwrt/packages/
-  PACKAGES="$PACKAGES easytier luci-app-easytier"
-  echo "✅ EasyTier apk 已添加"
+  PACKAGES="$PACKAGES easytier luci-app-easytier luci-i18n-easytier-zh-cn"
+  echo "✅ EasyTier apk 已添加（含中文语言包）"
 else
   echo "⚠️ 未找到 EasyTier 下载链接，跳过"
 fi

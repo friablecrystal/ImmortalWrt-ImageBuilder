@@ -42,6 +42,14 @@ on:
       pppoe_password:
         description: "宽带密码 (若启用PPPoE)"
         required: false
+      wan_interfaces:
+        description: "WAN口绑定的接口(多网口路由器有效，逗号分隔) 例如: eth0 或 eth0,eth1"
+        required: false
+        default: ""
+      lan_interfaces:
+        description: "LAN口绑定的接口(多网口路由器有效，逗号分隔) 例如: eth1,eth2,eth3 或 eth2,eth3"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -92,6 +100,8 @@ jobs:
             -e ENABLE_PPPOE=${{ inputs.enable_pppoe }} \
             -e PPPOE_ACCOUNT=${{ inputs.pppoe_account }} \
             -e PPPOE_PASSWORD=${{ inputs.pppoe_password }} \
+            -e WAN_INTERFACES="${{ inputs.wan_interfaces }}" \
+            -e LAN_INTERFACES="${{ inputs.lan_interfaces }}" \
           immortalwrt/imagebuilder:x86-64-openwrt-${luci_version} /bin/bash /home/build/immortalwrt/build.sh
           
 
